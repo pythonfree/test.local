@@ -10,11 +10,11 @@
 <body>
 <div>
     <input
-            type="hidden"
-            name="ORDER_PROP_7"
-            id="ORDER_PROP_7"
-            value=""
-            data-delivery-day>
+        type="hidden"
+        name="ORDER_PROP_7"
+        id="ORDER_PROP_7"
+        value=""
+        data-delivery-day>
     <select id="dateList"></select>
     <input
         type="hidden"
@@ -23,6 +23,7 @@
         value=""
         data-delivery-time>
     <select id="timeList"></select>
+
     <script data-skip-moving>
 
         const deliveryTime = [
@@ -218,12 +219,16 @@
 
 
         class DateList {
-            constructor(dateList = '#dateList') {
+            constructor(dateList = '#dateList', timeList = '#timeList', inputForDate  = 'ORDER_PROP_7', inputForTime = 'ORDER_PROP_8') {
+                this.inputForDate = inputForDate;
+                this.inputForTime = inputForTime;
                 this.dateList = dateList;
+                this.timeList = timeList;
                 this.dateIntervals = [];
                 this.allProducts = [];
                 this._fetchProducts();
                 this._render();
+                this._setInit(inputForDate, inputForTime);
             }
             _fetchProducts() {
                 this.dateIntervals = deliveryTime;
@@ -235,6 +240,17 @@
                     const dateObject = new DateItem(item);
                     this.allProducts.push(dateObject);
                     dateList.insertAdjacentHTML('beforeend', dateObject.render())
+                }
+            }
+            _setInit() {
+                const inputForDate = document.getElementById(this.inputForDate);
+                inputForDate.value = this.dateIntervals[0].date.value;
+                const inputForTime = document.getElementById(this.inputForTime);
+                inputForTime.value = this.dateIntervals[0].time[0].value;
+
+                const timeList = document.querySelector(this.timeList);
+                for (let timeItem of this.dateIntervals[0].time) {
+                    timeList.insertAdjacentHTML('beforeend', `<option value="${timeItem.value}">${timeItem.text}</option>`);
                 }
             }
         }
@@ -251,8 +267,23 @@
             }
         }
 
-        const list = new DateList();
-        console.log(list);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = new DateList();
+            console.log(list);
+
+
+            document.getElementById('dateList').addEventListener('change', () => {
+                const ORDER_PROP_7 = document.getElementById('ORDER_PROP_7');
+                ORDER_PROP_7.value = this.value;
+                //const timeList = document.getElementById('timeList');
+
+                // let burger = new Burger('size', 'add', 'toppings');
+                // console.log(burger);
+                // burger.showSum('#price', '#calories');
+            })
+        });
+
 
 
         // const renderDate = item => `<option value="${item.date.value}">${item.date.text}</option>`;
